@@ -3,22 +3,22 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>PLUMB — AI projektové řízení, které drží práci v olovnici</title>
+    <title>PLUMB — AI projektové řízení a optimalizace</title>
     <meta
       name="description"
-      content="PLUMB instaluje AI operační systém pro doručování. Najdeme, kudy práce opravdu teče, seřízneme drift a držíme termíny pravdivé."
+      content="Zavádíme AI do řízení projektů: termíny, závislosti, rizika a kapacity. Funguje nad nástroji, které už používáte."
     />
     <meta name="theme-color" content="#F1F2EE" />
-    <meta property="og:title" content="PLUMB — Vaše práce není v olovnici." />
+    <meta property="og:title" content="PLUMB — AI projektové řízení a optimalizace" />
     <meta
       property="og:description"
-      content="AI projektové řízení a optimalizace. Zavěsíme čáru, přečteme náklon a srovnáme systém."
+      content="Diagnostika projektů, AI operátor a optimalizace dodávek. Bez migrace na nový nástroj."
     />
     <meta property="og:type" content="website" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;800&family=IBM+Plex+Mono:wght@400;500&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;1,400&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=Source+Sans+3:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
     <script src="https://cdn.tailwindcss.com"></script>
@@ -29,7 +29,6 @@
             colors: {
               gypsum: "#F1F2EE",
               graphite: "#1B1E1C",
-              brass: "#B0892E",
               chalk: "#1F5AA6",
               iron: "#5C615C",
               mark: "#B83A22",
@@ -39,9 +38,6 @@
               display: ['"Big Shoulders Display"', "Impact", "sans-serif"],
               body: ['"Source Sans 3"', "ui-sans-serif", "system-ui"],
               mono: ['"IBM Plex Mono"', "ui-monospace", "monospace"],
-            },
-            letterSpacing: {
-              stamp: "0.22em",
             },
           },
         },
@@ -59,260 +55,116 @@
         background: #1f5aa6;
         color: #f1f2ee;
       }
-      .plumb-line {
-        transform-origin: top center;
-        animation: sway 7s ease-in-out infinite;
-      }
-      .bob-shine {
-        animation: gleam 5.5s ease-in-out infinite;
-      }
-      @keyframes sway {
-        0%,
-        100% {
-          transform: rotate(-0.7deg);
-        }
-        50% {
-          transform: rotate(0.7deg);
-        }
-      }
-      @keyframes gleam {
-        0%,
-        70%,
-        100% {
-          opacity: 0.15;
-        }
-        78% {
-          opacity: 0.55;
-        }
-      }
-      .level-bubble {
-        transition: left 1.1s cubic-bezier(0.22, 1, 0.36, 1);
-      }
-      .level-bubble.is-true {
-        left: calc(50% - 14px);
-      }
-      .drift-bar {
-        transform-origin: left center;
-        transition: transform 1.1s cubic-bezier(0.22, 1, 0.36, 1);
-      }
-      .is-true .drift-bar.lean-b,
-      .is-true .drift-bar.lean-c {
-        transform: rotate(0deg);
-      }
-      @media (prefers-reduced-motion: reduce) {
-        .plumb-line,
-        .bob-shine,
-        .level-bubble,
-        .drift-bar {
-          animation: none;
-          transition: none;
-        }
-      }
     </style>
   </head>
   <body class="flex h-dvh flex-col overflow-hidden bg-gypsum font-body text-graphite antialiased">
-    <a
-      href="#main"
-      class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:bg-graphite focus:px-3 focus:py-2 focus:text-gypsum"
-      >Přeskočit na obsah</a
-    >
-
-    <div
-      class="pointer-events-none fixed left-[14px] top-0 z-40 hidden h-dvh md:block lg:left-[22px]"
-      aria-hidden="true"
-    >
-      <div class="plumb-line relative h-full w-8">
-        <div class="absolute left-1/2 top-0 h-[calc(100%-64px)] w-px -translate-x-1/2 bg-chalk/80"></div>
-        <svg class="absolute bottom-4 left-1/2 h-[48px] w-[24px] -translate-x-1/2" viewBox="0 0 28 58" fill="none">
-          <path d="M14 0v10" stroke="#1F5AA6" stroke-width="1" />
-          <path d="M8 12h12l-1.5 6H9.5L8 12z" fill="#B0892E" />
-          <path d="M6 19c0 8 3.2 22 8 34 4.8-12 8-26 8-34 0-4.4-3.6-7-8-7s-8 2.6-8 7z" fill="#B0892E" />
-          <path class="bob-shine" d="M10 22c1.2-2 3-3.2 4.6-3.4" stroke="#F1F2EE" stroke-width="1.2" stroke-linecap="round" />
-        </svg>
-      </div>
-    </div>
-
     <header class="shrink-0 border-b border-graphite/10">
-      <div class="flex items-center justify-between px-4 py-3 pl-10 md:px-8 md:pl-16">
-        <a href="#main" class="flex items-baseline gap-2" aria-label="PLUMB, úvod">
-          <span class="font-display text-2xl font-extrabold leading-none tracking-tight md:text-3xl">PLUMB</span>
-          <span class="hidden font-mono text-[10px] uppercase tracking-stamp text-iron sm:inline">v olovnici</span>
-        </a>
-        <p class="hidden font-mono text-[10px] uppercase tracking-stamp text-iron md:block">
-          AI projektové řízení · optimalizace
-        </p>
+      <div class="flex items-center justify-between px-6 py-4 md:px-10">
+        <a href="#main" class="font-display text-2xl font-extrabold tracking-tight md:text-3xl">PLUMB</a>
         <a
-          href="#book"
-          class="bg-graphite px-3 py-2 font-mono text-[10px] uppercase tracking-stamp text-gypsum transition hover:bg-chalk focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-chalk md:px-4"
-          >Objednat diagnostiku</a
+          href="#poptavka"
+          class="bg-graphite px-4 py-2 font-mono text-[11px] uppercase tracking-widest text-gypsum hover:bg-chalk focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-chalk"
+          >Nezávazná poptávka</a
         >
       </div>
     </header>
 
     <main id="main" class="grid min-h-0 flex-1 overflow-hidden lg:grid-cols-12">
-      <section class="flex min-h-0 flex-col justify-between overflow-hidden px-4 py-4 pl-10 md:px-8 md:py-6 md:pl-16 lg:col-span-7">
-        <div>
-          <p class="font-mono text-[10px] uppercase tracking-stamp text-chalk md:text-[11px]">
-            AI projektové řízení · optimalizace
-          </p>
-          <h1
-            class="mt-2 font-display font-extrabold uppercase leading-[0.82] tracking-tight"
-            style="font-size: clamp(2.4rem, 7.2vw, 6.4rem)"
-          >
-            Vaše práce<br />není v olovnici.
-          </h1>
-          <p class="mt-3 max-w-xl text-[0.95rem] leading-snug text-iron md:mt-4 md:text-lg">
-            Termíny ujíždějí. Status je divadlo. Plán a práce žijí v jiných místnostech.
-            Zavěsíme čáru skrz skutečnou cestu a nainstalujeme AI, která ji drží rovně.
-          </p>
-          <p class="mt-3 font-mono text-[10px] uppercase tracking-stamp text-brass md:mt-4">
-            01 zavěsit · 02 přečíst · 03 srovnat
-          </p>
-        </div>
+      <section class="flex min-h-0 flex-col justify-center overflow-hidden px-6 py-6 md:px-10 lg:col-span-7">
+        <p class="font-mono text-[11px] uppercase tracking-widest text-chalk">Služby pro firmy</p>
+        <h1
+          class="mt-3 max-w-3xl font-display font-extrabold uppercase leading-[0.88] tracking-tight"
+          style="font-size: clamp(2.2rem, 5.6vw, 5.2rem)"
+        >
+          Projektové řízení a optimalizace pomocí AI
+        </h1>
+        <p class="mt-5 max-w-xl text-base leading-relaxed text-iron md:text-lg">
+          Nasazujeme AI do řízení projektů: hlídá termíny, závislosti, rizika a vytížení lidí.
+          Pracuje nad Jirou, Linearem, Notionem nebo Asanou. Nic nestěhujete, nedostanete další tabuli.
+        </p>
 
-        <div id="level-stage" class="mt-4 hidden min-h-0 sm:block">
-          <div class="grid gap-5 lg:grid-cols-2">
-            <div>
-              <p class="font-mono text-[10px] uppercase tracking-stamp text-iron">Terénní čtení</p>
-              <div
-                class="mt-2 border border-graphite/15 bg-mist/40 px-3 py-3"
-                role="img"
-                aria-label="Vodováha: projekt začíná mimo střed a srovná se do olovnice"
-              >
-                <div class="flex items-center justify-between font-mono text-[10px] uppercase tracking-stamp text-iron">
-                  <span>Náklon</span>
-                  <span id="level-label">+4,8° skluz</span>
-                  <span>Rovno</span>
-                </div>
-                <div class="relative mt-2 h-8 border border-graphite/30 bg-gypsum">
-                  <div class="absolute inset-y-0 left-1/2 w-8 -translate-x-1/2 bg-chalk/10"></div>
-                  <div
-                    id="bubble"
-                    class="level-bubble absolute top-1/2 h-6 w-6 -translate-y-1/2 rounded-full border border-graphite/40 bg-gypsum"
-                    style="left: 18%"
-                  >
-                    <div class="absolute left-1.5 top-1 h-1.5 w-1.5 rounded-full bg-white/70"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div>
-              <p class="font-mono text-[10px] uppercase tracking-stamp text-iron">Plán versus zátěž</p>
-              <div class="mt-2 space-y-2">
-                <div>
-                  <div class="mb-1 flex justify-between font-mono text-[10px] uppercase tracking-stamp text-iron">
-                    <span>Průzkum</span><span>v termínu</span>
-                  </div>
-                  <div class="drift-bar h-2 w-[38%] bg-chalk"></div>
-                </div>
-                <div>
-                  <div class="mb-1 flex justify-between font-mono text-[10px] uppercase tracking-stamp text-iron">
-                    <span>Stavba</span><span>16 dní pozdě</span>
-                  </div>
-                  <div class="drift-bar lean-b h-2 w-[72%] bg-brass" style="transform: rotate(2.4deg)"></div>
-                </div>
-                <div>
-                  <div class="mb-1 flex justify-between font-mono text-[10px] uppercase tracking-stamp text-iron">
-                    <span>Start</span><span>bez termínu</span>
-                  </div>
-                  <div class="drift-bar lean-c h-2 w-[54%] bg-mark" style="transform: rotate(-3.2deg)"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <ul class="mt-8 grid gap-4 sm:grid-cols-3">
+          <li class="border-t border-graphite/15 pt-3">
+            <h2 class="font-display text-2xl font-bold uppercase leading-none">Diagnostika</h2>
+            <p class="mt-2 text-sm leading-snug text-iron">
+              10 dní. Zpráva, kde projekty reálně stojí a co je brzdí.
+            </p>
+          </li>
+          <li class="border-t border-graphite/15 pt-3">
+            <h2 class="font-display text-2xl font-bold uppercase leading-none">AI operátor</h2>
+            <p class="mt-2 text-sm leading-snug text-iron">
+              Průběžný status, rizika a follow-up. Lidé rozhodují, systém hlídá.
+            </p>
+          </li>
+          <li class="border-t border-graphite/15 pt-3">
+            <h2 class="font-display text-2xl font-bold uppercase leading-none">Optimalizace</h2>
+            <p class="mt-2 text-sm leading-snug text-iron">
+              Kritická cesta, kapacity a portfolio. Méně skluzu, méně zbytečné práce.
+            </p>
+          </li>
+        </ul>
       </section>
 
-      <aside class="flex min-h-0 flex-col overflow-hidden border-t border-graphite/10 bg-mist/35 lg:col-span-5 lg:border-l lg:border-t-0">
-        <div class="grid shrink-0 grid-cols-3 gap-px border-b border-graphite/10 bg-graphite/10">
-          <article class="bg-gypsum p-3 md:p-4">
-            <p class="font-mono text-[9px] uppercase tracking-stamp text-brass">Diagnostika</p>
-            <h2 class="mt-1 font-display text-xl font-bold uppercase leading-none md:text-2xl">10 dní</h2>
-            <p class="mt-1 hidden text-xs leading-snug text-iron sm:block">Mapa skutečné zátěže. Terénní zpráva, ne deck.</p>
-          </article>
-          <article class="bg-gypsum p-3 md:p-4">
-            <p class="font-mono text-[9px] uppercase tracking-stamp text-brass">Systém</p>
-            <h2 class="mt-1 font-display text-xl font-bold uppercase leading-none md:text-2xl">AI pult</h2>
-            <p class="mt-1 hidden text-xs leading-snug text-iron sm:block">Standupy, status, rizika. Čte práci, ne přání.</p>
-          </article>
-          <article class="bg-gypsum p-3 md:p-4">
-            <p class="font-mono text-[9px] uppercase tracking-stamp text-brass">Řez</p>
-            <h2 class="mt-1 font-display text-xl font-bold uppercase leading-none md:text-2xl">Drift</h2>
-            <p class="mt-1 hidden text-xs leading-snug text-iron sm:block">Kritická cesta, kapacita, zbytečné schůzky pryč.</p>
-          </article>
-        </div>
+      <aside class="flex min-h-0 flex-col justify-center overflow-hidden border-t border-graphite/10 bg-mist/40 px-6 py-6 md:px-10 lg:col-span-5 lg:border-l lg:border-t-0">
+        <form id="poptavka" novalidate>
+          <h2 class="font-display text-3xl font-extrabold uppercase leading-none">Napište nám</h2>
+          <p class="mt-2 text-sm text-iron">Ozveme se do jednoho pracovního dne.</p>
 
-        <form id="intake" class="flex min-h-0 flex-1 flex-col justify-between overflow-hidden p-4 md:p-6" novalidate>
-          <div>
-            <p class="font-mono text-[10px] uppercase tracking-stamp text-chalk">Začněte tady</p>
-            <h2 id="book" class="mt-1 font-display text-3xl font-extrabold uppercase leading-none md:text-4xl">
-              Objednat diagnostiku
-            </h2>
-            <p class="mt-2 text-sm text-iron">
-              Deset pracovních dní. Jedna terénní zpráva. Jasné ano nebo ne, jestli se AI pult zaplatí.
-            </p>
-          </div>
-
-          <div class="mt-3 grid gap-2 sm:grid-cols-2">
+          <div class="mt-5 grid gap-3">
             <label class="block">
-              <span class="font-mono text-[10px] uppercase tracking-stamp text-iron">Jméno</span>
+              <span class="font-mono text-[11px] uppercase tracking-widest text-iron">Jméno</span>
               <input
                 required
                 name="name"
                 autocomplete="name"
-                class="mt-1 w-full border border-graphite/20 bg-gypsum px-3 py-2 text-sm outline-none ring-chalk focus:ring-2"
+                class="mt-1 w-full border border-graphite/20 bg-gypsum px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-chalk"
               />
             </label>
             <label class="block">
-              <span class="font-mono text-[10px] uppercase tracking-stamp text-iron">Pracovní e-mail</span>
+              <span class="font-mono text-[11px] uppercase tracking-widest text-iron">E-mail</span>
               <input
                 required
                 type="email"
                 name="email"
                 autocomplete="email"
-                class="mt-1 w-full border border-graphite/20 bg-gypsum px-3 py-2 text-sm outline-none ring-chalk focus:ring-2"
+                class="mt-1 w-full border border-graphite/20 bg-gypsum px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-chalk"
               />
             </label>
-            <label class="block sm:col-span-2">
-              <span class="font-mono text-[10px] uppercase tracking-stamp text-iron">Firma</span>
+            <label class="block">
+              <span class="font-mono text-[11px] uppercase tracking-widest text-iron">Firma</span>
               <input
                 required
                 name="company"
                 autocomplete="organization"
-                class="mt-1 w-full border border-graphite/20 bg-gypsum px-3 py-2 text-sm outline-none ring-chalk focus:ring-2"
+                class="mt-1 w-full border border-graphite/20 bg-gypsum px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-chalk"
               />
             </label>
-            <label class="block sm:col-span-2">
-              <span class="font-mono text-[10px] uppercase tracking-stamp text-iron">Kde se to naklání?</span>
+            <label class="block">
+              <span class="font-mono text-[11px] uppercase tracking-widest text-iron">S čím potřebujete pomoct?</span>
               <textarea
                 required
-                name="lean"
-                rows="2"
-                class="mt-1 w-full resize-none border border-graphite/20 bg-gypsum px-3 py-2 text-sm outline-none ring-chalk focus:ring-2"
-                placeholder="Pozdní start, dva týmy na stejné práci, status, kterému nikdo nevěří…"
+                name="need"
+                rows="3"
+                class="mt-1 w-full resize-none border border-graphite/20 bg-gypsum px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-chalk"
               ></textarea>
             </label>
           </div>
 
-          <div class="mt-3">
-            <button
-              type="submit"
-              class="bg-mark px-5 py-2.5 font-mono text-[11px] uppercase tracking-stamp text-gypsum transition hover:bg-graphite focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-chalk"
-            >
-              Odeslat žádost
-            </button>
-            <p id="form-note" class="mt-2 hidden font-mono text-xs text-chalk" role="status"></p>
-          </div>
+          <button
+            type="submit"
+            class="mt-4 bg-mark px-5 py-2.5 font-mono text-[11px] uppercase tracking-widest text-gypsum hover:bg-graphite focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-chalk"
+          >
+            Odeslat
+          </button>
+          <p id="form-note" class="mt-3 hidden text-sm text-chalk" role="status"></p>
         </form>
       </aside>
     </main>
 
     <footer class="shrink-0 border-t border-graphite/10">
-      <div
-        class="flex items-center justify-between px-4 py-2 pl-10 font-mono text-[10px] uppercase tracking-stamp text-iron md:px-8 md:pl-16"
-      >
-        <p>PLUMB · Držíme práci rovně</p>
-        <p class="hidden sm:block">hello@plumb.studio</p>
+      <div class="flex items-center justify-between px-6 py-3 font-mono text-[11px] uppercase tracking-widest text-iron md:px-10">
+        <p>PLUMB</p>
+        <p>hello@plumb.studio</p>
       </div>
     </footer>
 
@@ -334,46 +186,30 @@
           { passive: false }
         );
 
-        var stage = document.getElementById("level-stage");
-        var bubble = document.getElementById("bubble");
-        var label = document.getElementById("level-label");
-        var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-        function trueUp() {
-          if (stage) stage.classList.add("is-true");
-          if (bubble) bubble.classList.add("is-true");
-          if (label) label.textContent = "0,0° rovno";
-        }
-
-        if (reduced) trueUp();
-        else setTimeout(trueUp, 800);
-
-        var form = document.getElementById("intake");
+        var form = document.getElementById("poptavka");
         var note = document.getElementById("form-note");
-        if (form) {
-          form.addEventListener("submit", function (event) {
-            event.preventDefault();
-            if (!form.reportValidity()) return;
-            var data = new FormData(form);
-            var body = [
-              "Jméno: " + data.get("name"),
-              "E-mail: " + data.get("email"),
-              "Firma: " + data.get("company"),
-              "",
-              "Kde se to naklání:",
-              data.get("lean"),
-            ].join("\n");
-            window.location.href =
-              "mailto:hello@plumb.studio?subject=" +
-              encodeURIComponent("PLUMB diagnostika — " + data.get("company")) +
-              "&body=" +
-              encodeURIComponent(body);
-            if (note) {
-              note.textContent = "Otevírám poštovního klienta. Když se nic nestane, napište hello@plumb.studio.";
-              note.classList.remove("hidden");
-            }
-          });
-        }
+        if (!form) return;
+        form.addEventListener("submit", function (event) {
+          event.preventDefault();
+          if (!form.reportValidity()) return;
+          var data = new FormData(form);
+          var body = [
+            "Jméno: " + data.get("name"),
+            "E-mail: " + data.get("email"),
+            "Firma: " + data.get("company"),
+            "",
+            data.get("need"),
+          ].join("\n");
+          window.location.href =
+            "mailto:hello@plumb.studio?subject=" +
+            encodeURIComponent("Poptávka PLUMB — " + data.get("company")) +
+            "&body=" +
+            encodeURIComponent(body);
+          if (note) {
+            note.textContent = "Otevírá se e-mail. Pokud ne, napište na hello@plumb.studio.";
+            note.classList.remove("hidden");
+          }
+        });
       })();
     </script>
   </body>
