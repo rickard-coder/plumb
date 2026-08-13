@@ -1,0 +1,6 @@
+{
+  "$schema": "https://unpkg.com/wrangler@4.122.0/config-schema.json",
+  "name": "plumb",
+  "pages_build_output_dir": ".",
+  "compatibility_date": "2026-08-01"
+}
