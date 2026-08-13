@@ -194,6 +194,16 @@
 
         var form = document.getElementById("poptavka");
         var note = document.getElementById("form-note");
+
+        // Proklik na CTA: mezikrok mezi navstevou a poptavkou. Kdyz lidi
+        // prichazi a na tlacitko neklikaji, je problem nahore na strance;
+        // kdyz klikaji a neodeslou, je problem ve formulari.
+        document.querySelectorAll('a[href="#poptavka"]').forEach(function (link) {
+          link.addEventListener("click", function () {
+            if (window.posthog) posthog.capture("cta_clicked", { label: link.textContent.trim().slice(0, 40) });
+          });
+        });
+
         if (!form) return;
         form.addEventListener("submit", async function (event) {
           event.preventDefault();
@@ -204,6 +214,11 @@
             note.textContent = "Odesílám…";
             note.classList.remove("hidden");
           }
+          // Vytazeno pred fetch, at je lze poslat i do udalosti. Do PostHogu
+          // jde jen typ potreby a jestli je vyplnena firma — zadne jmeno,
+          // e-mail ani text.
+          var need = form.need.value;
+          var company = form.company.value;
           try {
             var response = await fetch("/api/poptavka", {
               method: "POST",
@@ -211,8 +226,8 @@
               body: JSON.stringify({
                 name: form.name.value,
                 email: form.email.value,
-                company: form.company.value,
-                need: form.need.value,
+                company: company,
+                need: need,
               }),
             });
             var result = await response.json().catch(function () {
@@ -222,8 +237,18 @@
               throw new Error(result.error || "Odeslání se nepovedlo.");
             }
             form.reset();
+            // Konverze. Bez tohohle vidime jen navstevy a nevime, jestli
+            // stranka vede k poptavce, coz je jediny duvod, proc existuje.
+            if (window.posthog) {
+              posthog.capture("lead_submitted", { need: need, company_filled: Boolean(company) });
+            }
             if (note) note.textContent = "Odesláno. Ozveme se do jednoho pracovního dne.";
           } catch (error) {
+            // Odliseni "nikdo nepoptava" od "poptavka se neodesila" — bez toho
+            // vypada rozbity endpoint jako slaba konverze.
+            if (window.posthog) {
+              posthog.capture("lead_failed", { reason: String(error && error.message) });
+            }
             if (note) note.textContent = error.message || "Odeslání se nepovedlo.";
           } finally {
             if (button) button.disabled = false;
