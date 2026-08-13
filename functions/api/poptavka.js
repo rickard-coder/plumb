@@ -45,7 +45,7 @@ export async function onRequestPost(context) {
   }
 
   const to = env.CONTACT_TO || "janmartinek591@gmail.com";
-  const from = env.RESEND_FROM || "PLUMB <poptavka@honzamartinek.work>";
+  const from = env.RESEND_FROM || "PLUMB <onboarding@resend.dev>";
   const text = [
     "Nová poptávka z webu PLUMB",
     "",
