@@ -3,201 +3,535 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>PLUMB — AI projektové řízení a optimalizace</title>
+    <title>PLUMB — diagnostika a řízení projektů</title>
     <meta
       name="description"
-      content="Zavádíme AI do řízení projektů: termíny, závislosti, rizika a kapacity. Funguje nad nástroji, které už používáte."
+      content="Za deset pracovních dní pojmenujeme příčiny skluzu ve vašich projektech, vyčíslíme jejich dopad a předáme plán nápravy. Nad nástroji, které už používáte."
     />
-    <meta name="theme-color" content="#F1F2EE" />
-    <meta property="og:title" content="PLUMB — AI projektové řízení a optimalizace" />
+    <meta name="theme-color" content="#1B1F1D" />
+    <meta name="color-scheme" content="dark" />
+    <meta property="og:title" content="PLUMB — diagnostika a řízení projektů" />
     <meta
       property="og:description"
-      content="Diagnostika projektů, AI operátor a optimalizace dodávek. Bez migrace na nový nástroj."
+      content="Kde se plán rozešel s realitou. Fixní cena, deset dní, jeden dokument s plánem nápravy."
     />
     <meta property="og:type" content="website" />
+    <meta property="og:locale" content="cs_CZ" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=Source+Sans+3:wght@400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter+Tight:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,600&display=swap"
       rel="stylesheet"
     />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              gypsum: "#F1F2EE",
-              graphite: "#1B1E1C",
-              chalk: "#1F5AA6",
-              iron: "#5C615C",
-              mark: "#B83A22",
-              mist: "#D7DBD4",
-            },
-            fontFamily: {
-              display: ['"Big Shoulders Display"', "Impact", "sans-serif"],
-              body: ['"Source Sans 3"', "ui-sans-serif", "system-ui"],
-              mono: ['"IBM Plex Mono"', "ui-monospace", "monospace"],
-            },
-          },
-        },
-      };
-    </script>
     <style>
-      html,
+      /* ---- tokens ---------------------------------------------------- */
+      :root {
+        --paper: #1b1f1d; /* ground */
+        --paper-2: #232825; /* lifted panel */
+        --ink: #eef0eb; /* primary text */
+        --ink-2: #9ba39c; /* secondary text */
+        --rule: #363c39;
+        --brass: #c39c5f;
+        --brass-hi: #dbb57a;
+        --brass-wash: rgba(195, 156, 95, 0.13);
+
+        --gutter: clamp(1.25rem, 3.5vw, 3rem);
+        --serif: "Source Serif 4", Georgia, serif;
+        --sans: "Inter Tight", ui-sans-serif, system-ui, sans-serif;
+        --mono: "IBM Plex Mono", ui-monospace, monospace;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+      html {
+        -webkit-text-size-adjust: 100%;
+      }
       body {
-        height: 100%;
-        height: 100dvh;
-        overflow: hidden;
-        overscroll-behavior: none;
+        margin: 0;
+        min-height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: var(--sans);
+        font-size: 16px;
+        line-height: 1.55;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* The single-screen lock. Applied only where a full screen actually
+         fits — below this, the page scrolls rather than clipping the form. */
+      @media (min-width: 900px) and (min-height: 620px) {
+        html,
+        body {
+          height: 100dvh;
+          overflow: hidden;
+          overscroll-behavior: none;
+        }
+      }
+
+      h1,
+      h2,
+      h3 {
+        font-family: var(--serif);
+        font-weight: 600;
+        letter-spacing: -0.018em;
+        line-height: 1.08;
+        margin: 0;
+        text-wrap: balance;
+      }
+      p {
+        margin: 0;
+      }
+      a {
+        color: inherit;
+      }
+      ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
       }
       ::selection {
-        background: #1f5aa6;
-        color: #f1f2ee;
+        background: var(--brass);
+        color: #161a18;
+      }
+      :focus-visible {
+        outline: 2px solid var(--brass);
+        outline-offset: 3px;
+      }
+
+      .eyebrow {
+        font-family: var(--mono);
+        font-size: 10.5px;
+        font-weight: 500;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--brass);
+      }
+
+      /* ---- masthead -------------------------------------------------- */
+      .masthead {
+        flex: 0 0 auto;
+        border-bottom: 1px solid var(--rule);
+      }
+      .masthead__in {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 0.85rem var(--gutter);
+      }
+      .wordmark {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
+        font-family: var(--serif);
+        font-size: 1.3rem;
+        letter-spacing: 0.01em;
+        text-decoration: none;
+      }
+      .wordmark svg {
+        display: block;
+      }
+      .masthead__note {
+        display: none;
+        font-family: var(--mono);
+        font-size: 10.5px;
+        letter-spacing: 0.11em;
+        text-transform: uppercase;
+        color: var(--ink-2);
+      }
+      @media (min-width: 720px) {
+        .masthead__note {
+          display: block;
+        }
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: baseline;
+        gap: 0.65rem;
+        white-space: nowrap;
+        border: 0;
+        background: var(--brass);
+        color: #161a18;
+        font-family: var(--sans);
+        font-size: 0.92rem;
+        font-weight: 500;
+        padding: 0.72rem 1.2rem;
+        text-decoration: none;
+        cursor: pointer;
+        transition: background 0.18s ease;
+      }
+      .btn:hover {
+        background: var(--brass-hi);
+      }
+      .btn__price {
+        font-family: var(--mono);
+        font-size: 0.75rem;
+        opacity: 0.68;
+      }
+      .btn[disabled] {
+        opacity: 0.55;
+        cursor: progress;
+      }
+      @media (max-width: 640px) {
+        .masthead .btn {
+          padding: 0.6rem 0.85rem;
+          font-size: 0.84rem;
+        }
+        .masthead .btn__price {
+          display: none;
+        }
+      }
+
+      /* ---- the two-column screen ------------------------------------- */
+      .screen {
+        flex: 1 1 auto;
+        min-height: 0;
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+      @media (min-width: 900px) {
+        .screen {
+          grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+        }
+      }
+
+      .pitch,
+      .contact {
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: clamp(1.5rem, 3.2vh, 2.75rem) var(--gutter);
+      }
+      .contact {
+        background: var(--paper-2);
+        border-top: 1px solid var(--rule);
+      }
+      /* the plumb line: one true vertical dividing pitch from action */
+      @media (min-width: 900px) {
+        .contact {
+          border-top: 0;
+          border-left: 1px solid var(--rule);
+          position: relative;
+        }
+        .contact::before {
+          content: "";
+          position: absolute;
+          left: -1px;
+          top: 0;
+          width: 1px;
+          height: 38%;
+          background: var(--brass);
+        }
+      }
+
+      .pitch h1 {
+        font-size: clamp(1.85rem, 3.3vw, 2.85rem);
+        margin-top: 0.7rem;
+        max-width: 16ch;
+      }
+      .pitch__lede {
+        margin-top: 1rem;
+        max-width: 50ch;
+        color: var(--ink-2);
+        font-size: clamp(0.95rem, 1.15vw, 1.04rem);
+      }
+
+      /* ---- services with prices -------------------------------------- */
+      .services {
+        display: grid;
+        gap: 1.5rem;
+        margin-top: clamp(1.5rem, 3.5vh, 2.5rem);
+      }
+      @media (min-width: 640px) {
+        .services {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 1.4rem;
+        }
+      }
+      .service {
+        border-top: 1px solid var(--ink-2);
+        padding-top: 0.7rem;
+      }
+      .service--lead {
+        border-top-color: var(--brass);
+      }
+      .service h2 {
+        font-size: 1.08rem;
+      }
+      .service__price {
+        font-family: var(--mono);
+        font-size: 0.95rem;
+        font-weight: 500;
+        margin-top: 0.35rem;
+      }
+      .service--lead .service__price {
+        color: var(--brass);
+      }
+      .service__term {
+        font-family: var(--mono);
+        font-size: 0.66rem;
+        letter-spacing: 0.06em;
+        color: var(--ink-2);
+        margin-top: 0.15rem;
+      }
+      .service p.service__body {
+        font-size: 0.85rem;
+        line-height: 1.45;
+        color: var(--ink-2);
+        margin-top: 0.6rem;
+      }
+
+      .pitch__foot {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.75rem 1.25rem;
+        margin-top: clamp(1.25rem, 3vh, 2rem);
+      }
+      .pitch__note {
+        font-family: var(--mono);
+        font-size: 0.7rem;
+        letter-spacing: 0.05em;
+        color: var(--ink-2);
+      }
+
+      /* ---- form ------------------------------------------------------ */
+      .contact h2 {
+        font-size: clamp(1.25rem, 1.9vw, 1.6rem);
+      }
+      .contact__sub {
+        font-size: 0.88rem;
+        color: var(--ink-2);
+        margin-top: 0.45rem;
+      }
+      .fields {
+        display: grid;
+        gap: 0.7rem;
+        margin-top: clamp(1rem, 2.5vh, 1.5rem);
+      }
+      @media (min-width: 520px) {
+        .fields__pair {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 0.7rem;
+        }
+      }
+      .field > span {
+        display: block;
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.13em;
+        text-transform: uppercase;
+        color: var(--ink-2);
+        margin-bottom: 0.3rem;
+      }
+      .field input,
+      .field textarea {
+        width: 100%;
+        font-family: var(--sans);
+        font-size: 0.92rem;
+        color: var(--ink);
+        background: var(--paper);
+        border: 1px solid var(--rule);
+        padding: 0.6rem 0.75rem;
+        outline: none;
+        transition: border-color 0.15s ease;
+      }
+      .field textarea {
+        resize: none;
+        line-height: 1.5;
+      }
+      .field input:focus,
+      .field textarea:focus {
+        border-color: var(--brass);
+        box-shadow: inset 0 0 0 1px var(--brass);
+      }
+      .field input::placeholder,
+      .field textarea::placeholder {
+        color: color-mix(in srgb, var(--ink-2) 58%, transparent);
+      }
+      .form__foot {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.75rem 1rem;
+        margin-top: 1rem;
+      }
+      .form__small {
+        font-size: 0.74rem;
+        color: var(--ink-2);
+        max-width: 26ch;
+      }
+      .note {
+        margin-top: 0.8rem;
+        font-family: var(--mono);
+        font-size: 0.78rem;
+        padding: 0.5rem 0.7rem;
+        border-left: 2px solid var(--brass);
+        background: var(--brass-wash);
+      }
+      .note[hidden] {
+        display: none;
+      }
+
+      /* ---- colophon -------------------------------------------------- */
+      .colophon {
+        flex: 0 0 auto;
+        border-top: 1px solid var(--rule);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem 1.5rem;
+        justify-content: space-between;
+        padding: 0.7rem var(--gutter);
+        font-family: var(--mono);
+        font-size: 10.5px;
+        letter-spacing: 0.08em;
+        color: var(--ink-2);
+      }
+      .skip {
+        position: absolute;
+        left: -9999px;
+      }
+      .skip:focus {
+        position: static;
+        display: inline-block;
+        padding: 0.6rem 1rem;
+        background: var(--brass);
+        color: #161a18;
       }
     </style>
   </head>
-  <body class="flex h-dvh flex-col overflow-hidden bg-gypsum font-body text-graphite antialiased">
-    <header class="shrink-0 border-b border-graphite/10">
-      <div class="flex items-center justify-between px-6 py-4 md:px-10">
-        <a href="#main" class="font-display text-2xl font-extrabold tracking-tight md:text-3xl">PLUMB</a>
-        <a
-          href="#poptavka"
-          class="bg-graphite px-4 py-2 font-mono text-[11px] uppercase tracking-widest text-gypsum hover:bg-chalk focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-chalk"
-          >Nezávazná poptávka</a
-        >
+  <body>
+    <a class="skip" href="#poptavka">Přejít na formulář</a>
+
+    <header class="masthead">
+      <div class="masthead__in">
+        <span class="wordmark">
+          <svg width="9" height="26" viewBox="0 0 9 26" fill="none" aria-hidden="true">
+            <path d="M4.5 0v16" stroke="#9BA39C" stroke-width="1.2" />
+            <path d="M4.5 16l4 4-4 6-4-6 4-4z" fill="#C39C5F" />
+          </svg>
+          PLUMB
+        </span>
+        <p class="masthead__note">Fixní rozsah · fixní cena · žádné hodinovky</p>
       </div>
     </header>
 
-    <main id="main" class="grid min-h-0 flex-1 overflow-hidden lg:grid-cols-12">
-      <section class="flex min-h-0 flex-col justify-center overflow-hidden px-6 py-6 md:px-10 lg:col-span-7">
-        <p class="font-mono text-[11px] uppercase tracking-widest text-chalk">Služby pro firmy</p>
-        <h1
-          class="mt-3 max-w-3xl font-display font-extrabold uppercase leading-[0.88] tracking-tight"
-          style="font-size: clamp(2.2rem, 5.6vw, 5.2rem)"
-        >
-          Projektové řízení a optimalizace pomocí AI
-        </h1>
-        <p class="mt-5 max-w-xl text-base leading-relaxed text-iron md:text-lg">
-          Nasazujeme AI do řízení projektů: hlídá termíny, závislosti, rizika a vytížení lidí.
-          Pracuje nad Jirou, Linearem, Notionem nebo Asanou. Nic nestěhujete, nedostanete další tabuli.
+    <main class="screen">
+      <section class="pitch">
+        <p class="eyebrow">Diagnostika a řízení projektů</p>
+        <h1>Kde se plán rozešel s realitou</h1>
+        <p class="pitch__lede">
+          Za deset pracovních dní pojmenujeme příčiny skluzu ve vašich projektech, vyčíslíme jejich
+          dopad v penězích a předáme plán nápravy. Pracujeme nad Jirou, Linearem, Notionem nebo
+          Asanou — nic nestěhujete.
         </p>
 
-        <ul class="mt-8 grid gap-4 sm:grid-cols-3">
-          <li class="border-t border-graphite/15 pt-3">
-            <h2 class="font-display text-2xl font-bold uppercase leading-none">Diagnostika</h2>
-            <p class="mt-2 text-sm leading-snug text-iron">
-              10 dní. Zpráva, kde projekty reálně stojí a co je brzdí.
+        <ul class="services">
+          <li class="service service--lead">
+            <h2>Diagnostika</h2>
+            <p class="service__price">240 000 Kč</p>
+            <p class="service__term">10 pracovních dní · jednorázově</p>
+            <p class="service__body">
+              Zpráva, kde projekty reálně stojí, co je brzdí a kolik vás to stojí.
             </p>
           </li>
-          <li class="border-t border-graphite/15 pt-3">
-            <h2 class="font-display text-2xl font-bold uppercase leading-none">AI operátor</h2>
-            <p class="mt-2 text-sm leading-snug text-iron">
+          <li class="service">
+            <h2>AI operátor</h2>
+            <p class="service__price">90 000 Kč</p>
+            <p class="service__term">měsíčně · min. 3 měsíce</p>
+            <p class="service__body">
               Průběžný status, rizika a follow-up. Lidé rozhodují, systém hlídá.
             </p>
           </li>
-          <li class="border-t border-graphite/15 pt-3">
-            <h2 class="font-display text-2xl font-bold uppercase leading-none">Optimalizace</h2>
-            <p class="mt-2 text-sm leading-snug text-iron">
+          <li class="service">
+            <h2>Optimalizace</h2>
+            <p class="service__price">od 600 000 Kč</p>
+            <p class="service__term">3 měsíce · dle rozsahu</p>
+            <p class="service__body">
               Kritická cesta, kapacity a portfolio. Méně skluzu, méně zbytečné práce.
             </p>
           </li>
         </ul>
+
+        <div class="pitch__foot">
+          <a class="btn" href="#poptavka">
+            Poptat diagnostiku <span class="btn__price">240 000 Kč</span>
+          </a>
+          <p class="pitch__note">Beru dvě zakázky na kvartál.</p>
+        </div>
       </section>
 
-      <aside class="flex min-h-0 flex-col justify-center overflow-hidden border-t border-graphite/10 bg-mist/40 px-6 py-6 md:px-10 lg:col-span-5 lg:border-l lg:border-t-0">
+      <aside class="contact">
         <form id="poptavka" novalidate>
-          <h2 class="font-display text-3xl font-extrabold uppercase leading-none">Napište nám</h2>
-          <p class="mt-2 text-sm text-iron">Ozveme se do jednoho pracovního dne.</p>
+          <h2>Napište nám</h2>
+          <p class="contact__sub">Ozveme se do jednoho pracovního dne.</p>
 
-          <div class="mt-5 grid gap-3">
-            <label class="block">
-              <span class="font-mono text-[11px] uppercase tracking-widest text-iron">Jméno</span>
-              <input
-                required
-                name="name"
-                autocomplete="name"
-                class="mt-1 w-full border border-graphite/20 bg-gypsum px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-chalk"
-              />
+          <div class="fields">
+            <div class="fields__pair">
+              <label class="field">
+                <span>Jméno</span>
+                <input required name="name" autocomplete="name" />
+              </label>
+              <label class="field">
+                <span>E-mail</span>
+                <input required type="email" name="email" autocomplete="email" />
+              </label>
+            </div>
+            <label class="field">
+              <span>Firma</span>
+              <input required name="company" autocomplete="organization" />
             </label>
-            <label class="block">
-              <span class="font-mono text-[11px] uppercase tracking-widest text-iron">E-mail</span>
-              <input
-                required
-                type="email"
-                name="email"
-                autocomplete="email"
-                class="mt-1 w-full border border-graphite/20 bg-gypsum px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-chalk"
-              />
-            </label>
-            <label class="block">
-              <span class="font-mono text-[11px] uppercase tracking-widest text-iron">Firma</span>
-              <input
-                required
-                name="company"
-                autocomplete="organization"
-                class="mt-1 w-full border border-graphite/20 bg-gypsum px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-chalk"
-              />
-            </label>
-            <label class="block">
-              <span class="font-mono text-[11px] uppercase tracking-widest text-iron">S čím potřebujete pomoct?</span>
+            <label class="field">
+              <span>Co se u vás děje?</span>
               <textarea
                 required
                 name="need"
                 rows="3"
-                class="mt-1 w-full resize-none border border-graphite/20 bg-gypsum px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-chalk"
+                placeholder="Kolik projektů běží, kolik lidí na nich dělá a který termín vás teď nejvíc pálí."
               ></textarea>
             </label>
           </div>
 
-          <button
-            type="submit"
-            class="mt-4 bg-mark px-5 py-2.5 font-mono text-[11px] uppercase tracking-widest text-gypsum hover:bg-graphite focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-chalk"
-          >
-            Odeslat
-          </button>
-          <p id="form-note" class="mt-3 hidden text-sm text-chalk" role="status"></p>
+          <div class="form__foot">
+            <button class="btn" type="submit">Odeslat poptávku</button>
+            <p class="form__small">Odpovídáme do jednoho pracovního dne.</p>
+          </div>
+          <p id="form-note" class="note" role="status" hidden></p>
         </form>
       </aside>
     </main>
 
-    <footer class="shrink-0 border-t border-graphite/10">
-      <div class="flex items-center justify-between px-6 py-3 font-mono text-[11px] uppercase tracking-widest text-iron md:px-10">
-        <p>PLUMB</p>
-        <p>plumb.honzamartinek.work</p>
-      </div>
+    <footer class="colophon">
+      <p>PLUMB</p>
+      <p>plumb.honzamartinek.work</p>
     </footer>
 
     <script>
       (function () {
-        document.addEventListener(
-          "wheel",
-          function (event) {
-            event.preventDefault();
-          },
-          { passive: false }
-        );
-        document.addEventListener(
-          "touchmove",
-          function (event) {
-            if (event.target.closest("textarea, input")) return;
-            event.preventDefault();
-          },
-          { passive: false }
-        );
-
         var form = document.getElementById("poptavka");
         var note = document.getElementById("form-note");
         if (!form) return;
+
+        function say(message) {
+          if (!note) return;
+          note.textContent = message;
+          note.hidden = false;
+        }
+
         form.addEventListener("submit", async function (event) {
           event.preventDefault();
           if (!form.reportValidity()) return;
           var button = form.querySelector('button[type="submit"]');
           if (button) button.disabled = true;
-          if (note) {
-            note.textContent = "Odesílám…";
-            note.classList.remove("hidden");
-          }
+          say("Odesílám…");
           try {
             var response = await fetch("/api/poptavka", {
               method: "POST",
@@ -216,9 +550,9 @@
               throw new Error(result.error || "Odeslání se nepovedlo.");
             }
             form.reset();
-            if (note) note.textContent = "Odesláno. Ozveme se do jednoho pracovního dne.";
+            say("Odesláno. Ozveme se do jednoho pracovního dne.");
           } catch (error) {
-            if (note) note.textContent = error.message || "Odeslání se nepovedlo.";
+            say(error.message || "Odeslání se nepovedlo.");
           } finally {
             if (button) button.disabled = false;
           }
