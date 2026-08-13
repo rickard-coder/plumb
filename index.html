@@ -164,7 +164,7 @@
     <footer class="shrink-0 border-t border-graphite/10">
       <div class="flex items-center justify-between px-6 py-3 font-mono text-[11px] uppercase tracking-widest text-iron md:px-10">
         <p>PLUMB</p>
-        <p>hello@plumb.studio</p>
+        <p>plumb.honzamartinek.work</p>
       </div>
     </footer>
 
@@ -189,25 +189,38 @@
         var form = document.getElementById("poptavka");
         var note = document.getElementById("form-note");
         if (!form) return;
-        form.addEventListener("submit", function (event) {
+        form.addEventListener("submit", async function (event) {
           event.preventDefault();
           if (!form.reportValidity()) return;
-          var data = new FormData(form);
-          var body = [
-            "Jméno: " + data.get("name"),
-            "E-mail: " + data.get("email"),
-            "Firma: " + data.get("company"),
-            "",
-            data.get("need"),
-          ].join("\n");
-          window.location.href =
-            "mailto:hello@plumb.studio?subject=" +
-            encodeURIComponent("Poptávka PLUMB — " + data.get("company")) +
-            "&body=" +
-            encodeURIComponent(body);
+          var button = form.querySelector('button[type="submit"]');
+          if (button) button.disabled = true;
           if (note) {
-            note.textContent = "Otevírá se e-mail. Pokud ne, napište na hello@plumb.studio.";
+            note.textContent = "Odesílám…";
             note.classList.remove("hidden");
+          }
+          try {
+            var response = await fetch("/api/poptavka", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                name: form.name.value,
+                email: form.email.value,
+                company: form.company.value,
+                need: form.need.value,
+              }),
+            });
+            var result = await response.json().catch(function () {
+              return {};
+            });
+            if (!response.ok) {
+              throw new Error(result.error || "Odeslání se nepovedlo.");
+            }
+            form.reset();
+            if (note) note.textContent = "Odesláno. Ozveme se do jednoho pracovního dne.";
+          } catch (error) {
+            if (note) note.textContent = error.message || "Odeslání se nepovedlo.";
+          } finally {
+            if (button) button.disabled = false;
           }
         });
       })();
